@@ -1,0 +1,23 @@
+# Task 3: Reynolds Number Extrapolation (Held-out Extreme Re Regime)
+name: "reynolds_extrapolation"
+task_type: "ood_reynolds"
+
+split:
+  train_re_range: [3.0e6, 5.0e6]      # Mid-Re training regime
+  test_re_ranges:
+    - [2.0e6, 3.0e6]                  # Low-Re held-out extrapolation
+    - [5.0e6, 6.0e6]                  # High-Re held-out extrapolation
+  val_ratio: 0.1
+  shuffle_seed: 42
+
+operating_ranges:
+  full_reynolds: [2.0e6, 6.0e6]
+  aoa_deg: [-5.0, 15.0]
+
+evaluation_targets:
+  rel_l2_ux: 5.0e-4
+  rel_l2_uy: 1.8e-2
+  rel_l2_p: 6.0e-3
+  rel_l2_nut: 7.0e-2
+  cd_rel_err: 0.045
+  cd_fric_rel_err: 0.060

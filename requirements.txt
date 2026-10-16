@@ -1,0 +1,24 @@
+# Core Deep Learning & Geometric Framework
+torch>=2.1.0
+torchvision>=0.16.0
+torch-geometric>=2.4.0
+torch-cluster>=1.6.3
+torch-scatter>=2.1.2
+torch-sparse>=0.6.18
+
+# Configuration Management
+hydra-core>=1.3.2
+omegaconf>=2.3.0
+
+# Scientific Computing & CFD Utilities
+numpy>=1.24.0
+scipy>=1.11.0
+pandas>=2.0.0
+matplotlib>=3.7.0
+
+# Progress Tracking & CLI
+tqdm>=4.65.0
+rich>=13.0.0
+
+# Testing & Quality Assurance
+pytest>=7.4.0

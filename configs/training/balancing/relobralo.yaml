@@ -1,0 +1,8 @@
+# Dynamic Multi-Objective Loss Balancing: ReLoBRaLo
+enabled: true
+alpha: 0.999                  # Exponential moving average smoothing factor
+temperature: 0.1              # Softmax balancing temperature
+update_interval: 1            # Epoch interval to update loss weights
+burn_in_epochs: 5             # Static weighting before starting dynamic balancing
+max_weight_multiplier: 10.0   # Cap to prevent unbounded scaling
+min_weight_multiplier: 0.05

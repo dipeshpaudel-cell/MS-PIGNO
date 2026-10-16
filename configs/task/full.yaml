@@ -1,0 +1,21 @@
+# Task 1: Full Benchmark (800 Train / 200 Test Interpolation)
+name: "full"
+task_type: "interpolation"
+
+split:
+  train_samples: 800
+  test_samples: 200
+  val_samples_from_train: 100   # Internal validation split from train
+  shuffle_seed: 42
+
+operating_ranges:
+  reynolds: [2.0e6, 6.0e6]
+  aoa_deg: [-5.0, 15.0]
+
+evaluation_targets:
+  rel_l2_ux: 1.2e-4
+  rel_l2_uy: 5.5e-3
+  rel_l2_p: 1.8e-3
+  rel_l2_nut: 2.5e-2
+  cd_rel_err: 0.018
+  cd_fric_rel_err: 0.025

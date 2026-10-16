@@ -1,0 +1,14 @@
+# Standalone Configuration: Boundary Layer Refinement Head
+name: "bl_refinement_head"
+
+enabled: true
+sdf_threshold: 0.05           # Distance cutoff (m)
+num_fourier_modes: 16         # log(y+) Fourier basis dimensions
+hidden_dim: 128
+num_layers: 3
+dropout: 0.05
+anisotropic_edges: true
+k_neighbors: 8
+residual_blending:
+  mode: "smooth_tanh"         # Options: smooth_tanh, linear_ramp, hard_cutoff
+  decay_rate: 20.0

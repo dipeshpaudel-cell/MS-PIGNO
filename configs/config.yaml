@@ -1,0 +1,39 @@
+# Master Hydra Configuration for AirfRANS Neural Operator Surrogate
+defaults:
+  - _self_
+  - model: ms_pigno
+  - task: full
+  - training: curriculum_3phase
+  - training/balancing: relobralo
+
+# Global Paths & Environment
+paths:
+  raw_data_dir: "./Dataset"
+  cache_dir: "./cache/preprocessed_airfrans"
+  output_dir: "./outputs/${task.name}/${now:%Y-%m-%d_%H-%M-%S}"
+  checkpoint_dir: "${paths.output_dir}/checkpoints"
+  log_dir: "${paths.output_dir}/logs"
+
+# Flow & Fluid Physical Constants (Air at standard conditions)
+fluid_constants:
+  rho: 1.0              # Fluid density (kg/m^3)
+  nu_laminar: 1.5e-5    # Kinematic molecular viscosity (m^2/s)
+  chord: 1.0            # Reference chord length (m)
+  p_inf: 0.0            # Freestream reference gauge pressure (m^2/s^2)
+
+# Hardware & System Acceleration
+system:
+  device: "cuda"
+  seed: 42
+  num_workers: 4
+  pin_memory: true
+  cudnn_benchmark: true
+  matmul_precision: "high"   # TensorCore acceleration for FP32
+
+# Logging & Checkpointing Settings
+logging:
+  project_name: "airfrans_surrogate"
+  log_interval: 10
+  save_top_k: 3
+  monitor_metric: "val_rel_l2_total"
+  monitor_mode: "min"

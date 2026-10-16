@@ -1,0 +1,21 @@
+# Task 4: Angle of Attack Extrapolation (Attached -> Separated / Stall Regime)
+name: "aoa_extrapolation"
+task_type: "ood_aoa"
+
+split:
+  train_aoa_range_deg: [-5.0, 10.0]   # Attached flow training regime
+  test_aoa_range_deg: [10.0, 15.0]    # Separated / near-stall held-out regime
+  val_ratio: 0.1
+  shuffle_seed: 42
+
+operating_ranges:
+  reynolds: [2.0e6, 6.0e6]
+  full_aoa_deg: [-5.0, 15.0]
+
+evaluation_targets:
+  rel_l2_ux: 6.5e-4
+  rel_l2_uy: 2.2e-2
+  rel_l2_p: 7.5e-3
+  rel_l2_nut: 8.5e-2
+  cd_rel_err: 0.055
+  cd_fric_rel_err: 0.075

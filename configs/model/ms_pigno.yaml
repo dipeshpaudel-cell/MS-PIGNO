@@ -1,0 +1,55 @@
+# Architecture Configuration: MS-PIGNO with Physics-Aware Slicing
+name: "ms_pigno"
+
+# Node & Edge Input Dimensionality
+inputs:
+  node_in_channels: 5         # [U_inf_x, U_inf_y, SDF (phi), n_x, n_y]
+  pos_channels: 2             # [x, y]
+  edge_in_channels: 8         # [dx, dy, ||dx||, dx_hat, dy_hat, avg_phi, d_phi/||dx||, n_i . n_j]
+  cond_channels: 3            # [log10(Re), AoA_rad, U_inf_mag]
+  out_channels: 4             # [u_x, u_y, p, nu_t]
+
+# Multi-Scale Graph Hierarchy Specifications
+hierarchy:
+  num_levels: 3
+  level_nodes:
+    level_0: 180000           # Fine CFD mesh (full resolution)
+    level_1: 16384            # Mid mesh
+    level_2: 1024             # Coarse mesh
+  encoder_channels: [64, 128, 256]
+  decoder_channels: [256, 128, 64]
+  num_mp_layers_per_level: 2
+
+# Physics-Aware Slicing Transformer (Transolver Engine on Level 2)
+transformer:
+  hidden_dim: 256
+  num_slices: 64              # Number of learnable physics partitions (M)
+  num_layers: 6               # Transformer attention layers
+  num_heads: 8                # Multi-head attention heads
+  ffn_expansion: 4            # Feed-forward hidden ratio
+  dropout: 0.05
+  slice_temp: 1.0             # Softmax temperature for slicing weights
+
+# Feature-wise Linear Modulation (FiLM)
+film:
+  hidden_dim: 128
+  num_layers: 2
+  activation: "silu"
+
+# Boundary Layer Refinement Head
+bl_refinement:
+  enabled: true
+  sdf_threshold: 0.05         # Boundary layer active thickness (m, ~0.05c)
+  hidden_dim: 128
+  num_layers: 3
+  num_fourier_modes: 16       # Modes for log(y+) embedding
+  scale_y_plus: true
+
+# Physical Hard Constraints
+constraints:
+  wall_no_slip:
+    enabled: true
+    decay_delta: 1.0e-5       # Attenuation scale for velocity masking at solid wall
+  eddy_viscosity_positivity:
+    enabled: true
+    min_nu_t: 1.0e-8          # Numerical floor for turbulent viscosity

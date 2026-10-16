@@ -1,0 +1,68 @@
+# 3-Phase Curriculum Optimization & Training Strategy
+name: "curriculum_3phase"
+
+max_epochs: 250
+limit_train_batches: null
+limit_val_batches: null
+
+# Total Epoch Budget & Micro-Batching Specifications
+epochs:
+  total: 250
+  phase_1_end: 50             # Data-driven pre-training (L_data + L_BC)
+  phase_2_end: 150            # Physics & Sobolev warmup (L_data + L_PDE + L_grad)
+  phase_3_end: 250            # BL Refinement & Surface Force Integration
+
+batching:
+  batch_size: 1               # Strictly 1 fine-mesh per GPU to prevent VRAM explosion
+  accumulate_grad_batches: 4  # Effective physical batch size = 4
+  num_workers: 4
+  drop_last: false
+
+precision:
+  amp_enabled: true
+  amp_dtype: "bfloat16"       # "bfloat16" or "float16"
+
+optimizer:
+  type: "AdamW"
+  lr_phase_1: 1.0e-3
+  lr_phase_2: 5.0e-4
+  lr_phase_3: 1.0e-4
+  weight_decay: 1.0e-4
+  betas: [0.9, 0.999]
+  eps: 1.0e-8
+
+scheduler:
+  type: "CosineAnnealingWarmRestarts"
+  t_0: 50
+  t_mult: 2
+  eta_min: 1.0e-6
+
+gradient_clipping:
+  enabled: true
+  max_norm: 1.0
+
+# Phase-Specific Loss Weights & Schedulers
+loss_weights:
+  phase_1:
+    lambda_data: 1.0
+    lambda_bc: 1.0
+    lambda_pde: 0.0
+    lambda_grad: 0.0
+    lambda_coeff: 0.0
+    bl_weight_boost: 1.0
+  phase_2:
+    lambda_data: 1.0
+    lambda_bc: 1.0
+    lambda_pde: 0.05
+    pde_warmup_epochs: 20     # Linearly ramp lambda_pde from 0 to target
+    lambda_grad: 0.1
+    lambda_coeff: 0.0
+    bl_weight_boost: 3.0
+  phase_3:
+    lambda_data: 1.0
+    lambda_bc: 1.0
+    lambda_pde: 0.05
+    lambda_grad: 0.2
+    lambda_coeff: 1.0
+    lambda_cd_fric: 5.0       # Extra weighting on viscous drag
+    bl_weight_boost: 10.0     # 10x upweight for near-wall nodes

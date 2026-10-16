@@ -1,0 +1,21 @@
+# Task 2: Scarce Benchmark (100 Train / 200 Test Few-Shot Generalization)
+name: "scarce"
+task_type: "few_shot"
+
+split:
+  train_samples: 100            # Strictly 100 simulations
+  test_samples: 200             # Identical test set as Full task
+  val_samples_from_train: 20
+  shuffle_seed: 42
+
+operating_ranges:
+  reynolds: [2.0e6, 6.0e6]
+  aoa_deg: [-5.0, 15.0]
+
+evaluation_targets:
+  rel_l2_ux: 3.5e-4
+  rel_l2_uy: 1.2e-2
+  rel_l2_p: 4.5e-3
+  rel_l2_nut: 5.0e-2
+  cd_rel_err: 0.035
+  cd_fric_rel_err: 0.045
